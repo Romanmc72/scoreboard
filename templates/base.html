@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Scoreboard</title>
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+		<meta charset="utf-8"/>
+    </head>
+    <body>
+        <!-- The div where the javascript will render -->
+        <div id="root">
+            <p>Player</p>
+            <input type="text" v-model="name">
+            <button @click="addPerson">Add Player</button>
+            <button @click="removePerson">Remove Player</button>
+            <br>
+            <p>Points</p>
+            <input type="number" v-model="score">
+            <button @click="addToScore">Add to score</button>
+            <button @click="changeScore">Change score</button>
+            <br>
+            <button @click="updateScoreboard">Update Scoreboard</button>
+            <button @click="clearScoreboard">Clear Scoreboard</button>
+            <button @click="eraseScoreboard">Destroy Scoreboard</button>
+            <Scoreboard :people="people"></Scoreboard>
+        </div>
+
+        <!-- For the vue code to render -->
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+
+        <!-- To make API calls in JS -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        
+        <!-- Referencing our VueJS code -->
+        <script src="{{ url_for('static', filename='scripts/main.js') }}"></script>
+    </body>
+</html>
