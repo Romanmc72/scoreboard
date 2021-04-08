@@ -12,7 +12,7 @@ main() {
         --name scoreboard-db \
         redis:5.0.2-alpine
 
-    flask run
+    flask run --host=0.0.0.0
 }
 
 main
