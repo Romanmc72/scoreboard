@@ -1,5 +1,6 @@
 click==8.0.1
 Flask==2.0.1
+Flask-WTF==0.15.1
 importlib-metadata==4.0.1
 itsdangerous==2.0.1
 Jinja2==3.0.1
@@ -7,4 +8,5 @@ MarkupSafe==2.0.1
 redis==3.5.3
 typing-extensions==3.10.0.0
 Werkzeug==2.0.1
+WTForms==2.3.3
 zipp==3.4.1

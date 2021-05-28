@@ -21,12 +21,13 @@ new Vue({
     data: {
         people: [],
         name: '',
-        score: 0
+        score: 0,
+        game_code: game_code
     },
     methods: {
         updateScoreboard: function() {
             axios
-                .get("/api/scoreboard")
+                .get("/api/scoreboard/" + this.game_code)
                 .then((response) => {
                     this.people = response.data;
                 })
@@ -38,7 +39,7 @@ new Vue({
         },
         addPerson: function() {
             axios
-                .post('/api/score/' + this.name, {'score': this.score})
+                .post("/api/scoreboard/" + this.game_code + "/score/" + this.name, {'score': this.score})
                 .then((response) => {
                     console.log(response.data);
                 })
@@ -52,7 +53,7 @@ new Vue({
         },
         removePerson: function() {
             axios
-                .delete('/api/score/' + this.name)
+                .delete("/api/scoreboard/" + this.game_code + "/score/" + this.name)
                 .then((response) => {
                     console.log(response.data);
                 })
@@ -65,7 +66,7 @@ new Vue({
         },
         addToScore: function() {
             axios
-                .put('/api/score/' + this.name, {'score': this.score, 'method': 'add'})
+                .put("/api/scoreboard/" + this.game_code + "/score/" + this.name, {'score': this.score, 'method': 'add'})
                 .then((response) => {
                     console.log(response.data);
                 })
@@ -79,7 +80,7 @@ new Vue({
         },
         changeScore: function() {
             axios
-                .put('/api/score/' + this.name, {'score': this.score, 'method': 'replace'})
+                .put("/api/scoreboard/" + this.game_code + "/score/" + this.name, {'score': this.score, 'method': 'replace'})
                 .then((response) => {
                     console.log(response.data);
                 })
@@ -93,7 +94,7 @@ new Vue({
         },
         eraseScoreboard: function() {
             axios
-                .delete("/api/scoreboard")
+                .delete("/api/scoreboard/" + this.game_code )
                 .then((response) => {
                     this.people = response.data;
                 })
@@ -105,7 +106,7 @@ new Vue({
         },
         clearScoreboard: function() {
             axios
-                .put("/api/scoreboard", {})
+                .put("/api/scoreboard/" + this.game_code, {})
                 .then((response) => {
                     this.people = response.data;
                 })
