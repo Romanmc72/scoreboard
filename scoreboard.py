@@ -4,6 +4,7 @@ This is the scoreboard tracking app. An API that can be hit and updated to
 reflect the score for everyone to view.
 """
 import json
+import re
 import os
 
 from flask import Flask
@@ -29,6 +30,8 @@ REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
 db = redis.Redis(host=REDIS_HOST, port=REDIS_PORT)
 
 
+GAME_CODE_MATCH = r"^[a-z\-]+$"
+
 class GameCodeForm(FlaskForm):
     """The form for starting a new scoreboard"""
     class Meta:
@@ -37,7 +40,7 @@ class GameCodeForm(FlaskForm):
         'Game Code',
         validators=[
             Length(min=4, max=12, message="Please enter a game code between 4 and 12 characters."),
-            Regexp(r"^[a-z\-]+$", message="Only use lowercase letters and hyphens.")
+            Regexp(GAME_CODE_MATCH, message="Only use lowercase letters and hyphens.")
         ]
     )
     submit = SubmitField('Join Scoreboard')
@@ -84,9 +87,10 @@ def index():
 @app.route('/<game_code>', methods=['GET'])
 def my_game(game_code):
     """This is the actual scoreboard display"""
-    if game_code == '':
+    if re.match(GAME_CODE_MATCH, game_code) is None:
         return redirect(url_for('index'))
-    return render_template("game.html", game_code=game_code)
+    else:
+        return render_template("game.html", game_code=game_code)
 
 
 @app.route('/api/scoreboard/<game_code>/score/<name>', methods=['GET', 'PUT', 'POST', 'DELETE'])
