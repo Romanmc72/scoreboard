@@ -24,7 +24,9 @@ from wtforms.validators import Regexp
 import redis
 
 app = Flask(__name__)
-db = redis.Redis()
+REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
+REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
+db = redis.Redis(host=REDIS_HOST, port=REDIS_PORT)
 
 
 class GameCodeForm(FlaskForm):
@@ -35,7 +37,7 @@ class GameCodeForm(FlaskForm):
         'Game Code',
         validators=[
             Length(min=4, max=12, message="Please enter a game code between 4 and 12 characters."),
-            Regexp(r"[a-z\-]+", message="Only use lowercase letters and hyphens.")
+            Regexp(r"^[a-z\-]+$", message="Only use lowercase letters and hyphens.")
         ]
     )
     submit = SubmitField('Join Scoreboard')
@@ -122,6 +124,7 @@ def api_user(game_code, name):
         try:
             score = int(data.get('score', 0))
         except ValueError:
+            score = data.get('score')
             return Response(json.dumps({'error': f'invalid score entry `{score}`, use integer.'}), mimetype='application/json', status=400)
 
         current_score = db.get(game_code + ":" + name)
@@ -144,6 +147,7 @@ def api_user(game_code, name):
         try:
             score = int(data.get('score', 0))
         except ValueError:
+            score = data.get('score')
             return Response(json.dumps({'error': f'invalid score entry `{score}`, use integer.'}), mimetype='application/json', status=400)
         if db.get(game_code + ":" + name) is None:
             db.set(game_code + ":" + name, score)
