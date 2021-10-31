@@ -11,3 +11,37 @@ th, td {
     border-radius: 0%;
     padding: 5px;
 }
+
+game-link, a {
+    color: rgb(0, 0, 255);
+    text-decoration: underline dotted;
+    font-weight: bold;
+}
+
+game-link:hover, a:hover {
+    color: rgb(255, 136, 0);
+    text-decoration: none;
+    font-weight: normal;
+}
+
+*.success-message {
+    background-color: rgb(68, 68, 68);
+    color: rgb(255, 230, 0);
+    visibility: hidden;
+}
+
+.game-link .tooltip {
+visibility: hidden;
+width: 120px;
+background-color: black;
+color: #fff;
+text-align: center;
+border-radius: 6px;
+padding: 5px 0;
+position: absolute;
+z-index: 1;
+}
+
+.game-link:hover .tooltip {
+    visibility: visible;
+}
