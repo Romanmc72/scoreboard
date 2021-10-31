@@ -1,9 +1,9 @@
 // Additional helper scripts
 
-function copyGameLinkToClipboard() {
+async function copyGameLinkToClipboard() {
   const copyUrl = window.location.href;
   console.log("URL is `" + copyUrl + "`.");
-  navigator.clipboard.writeText(copyUrl);
+  await navigator.clipboard.writeText(copyUrl);
   // set the value of a hidden object to allow the
   // "copied to clipboard" message to appear
   changeCopySuccessVisibility('visible');

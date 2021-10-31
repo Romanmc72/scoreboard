@@ -118,6 +118,7 @@ new Vue({
         }
     },
     mounted: function () {
+        this.updateScoreboard();
         setInterval(this.updateScoreboard, 3000);
     }
 });
