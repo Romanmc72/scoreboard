@@ -6,20 +6,23 @@
 		<meta charset="utf-8"/>
     </head>
     <body>
-        <h2>Current Game Code "{{ game_code }}".<br><a href="{{ url_for('index') }}">get new code</a></h2>
+        <h2>
+            Current Game Code "<a class="game-link" onclick="copyGameLinkToClipboard()">{{ game_code }}<span class="tooltip">Click to copy game URL</span></a>"
+                <span id="success-message" class="success-message">Copied To Clipboard!</span><br>
+            <a href="{{ url_for('index') }}">get new code</a>
+        </h2>
         <!-- The div where the javascript will render -->
         <div id="root">
             <p>Player</p>
             <input type="text" v-model="name">
-            <button @click="addPerson">Add Player</button>
-            <button @click="removePerson">Remove Player</button>
+            <button @click="addPerson">Add New Player</button>
+            <button @click="removePerson">Remove Existing Player</button>
             <br>
             <p>Points</p>
             <input type="number" v-model="score">
-            <button @click="addToScore">Add to score</button>
-            <button @click="changeScore">Change score</button>
+            <button @click="addToScore">Add Points to Player</button>
+            <button @click="changeScore">Change Player Score</button>
             <br>
-            <button @click="updateScoreboard">Update Scoreboard</button>
             <button @click="clearScoreboard">Clear Scoreboard</button>
             <button @click="eraseScoreboard">Destroy Scoreboard</button>
             <Scoreboard :people="people"></Scoreboard>
@@ -38,5 +41,7 @@
 
         <!-- Referencing our VueJS code -->
         <script src="{{ url_for('static', filename='scripts/main.js') }}"></script>
+        <!-- Referencing other specific JS helpers -->
+        <script src="{{ url_for('static', filename='scripts/helpers.js') }}"></script>
     </body>
 </html>
