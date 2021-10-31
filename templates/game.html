@@ -7,7 +7,7 @@
     </head>
     <body>
         <h2>
-            Current Game Code "<a class="game-link" onclick="copyGameLinkToClipboard()">{{ game_code }}<span class="tooltip">Click to copy game URL</span></a>"
+            Current Game Code "<a class="game-link" onclick="copyGameLinkToClipboard()" allow="clipboard-write">{{ game_code }}<span class="tooltip">Click to copy game URL</span></a>"
                 <span id="success-message" class="success-message">Copied To Clipboard!</span><br>
             <a href="{{ url_for('index') }}">get new code</a>
         </h2>
