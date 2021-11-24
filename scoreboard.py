@@ -8,6 +8,7 @@ import os
 import random
 import re
 import string
+from textwrap import dedent
 
 from flask import Flask
 from flask import redirect
@@ -124,18 +125,37 @@ def my_game(game_code):
 )
 def api_user(game_code, name):
     """
-    Manipulate a users score with this endpoint.
+    Description
+    -----------
+    Manipulate a user's score with this endpoint.
 
+    Methods
+    -------
     Use GET to see the score, but you must pass in the name in the url:
 
     Use POST to add a new player. This will fail if they exist already.
-        {'score': <number>}
+        {
+            'score': <number>
+        }
 
     Use PUT to modify an existing player's score.
-        {'score': <number>, 'method': '<add|replace>'}
-        (default method is 'replace' if omitted)
+        {
+            'score': <number>,         // Use a negative value to subtract. INT only.
+            'method': '<add|replace>'  // (default method is 'replace' if omitted)
+        }
 
     Use DELETE to delete a player from the scoreboard.
+
+    Return
+    ------
+    On <GET | POST | PUT>, returns: {
+        'name': <string>,
+        'score': <number>
+    }
+    On <DELETE>, returns: {
+        'name': <string>,
+        'action': ('delete' | 'pass')   // If already deleted, returns 'pass'
+    }
     """
     data = request.json
     if name is None:
@@ -146,18 +166,21 @@ def api_user(game_code, name):
         )
 
     if request.method == "GET":
-        score = db.get(game_code + ":" + name)
-        if score is None:
+        if request.args.get("help", None) is not None:
+            return Response(dedent(api_user.__doc__), mimetype="text/plain", status=200)
+        else:
+            score = db.get(game_code + ":" + name)
+            if score is None:
+                return Response(
+                    json.dumps({"error": f"score not found for `{name}`"}),
+                    mimetype="application/json",
+                    status=404,
+                )
             return Response(
-                json.dumps({"error": f"score not found for `{name}`"}),
+                json.dumps({"name": name, "score": score}),
                 mimetype="application/json",
-                status=404,
+                status=200,
             )
-        return Response(
-            json.dumps({"name": name, "score": score}),
-            mimetype="application/json",
-            status=200,
-        )
 
     elif request.method == "DELETE":
         unlinked = db.unlink(game_code + ":" + name)
@@ -239,13 +262,42 @@ def api_user(game_code, name):
 
 @app.route("/api/scoreboard/<game_code>", methods=["GET", "DELETE", "PUT"])
 def api_scoreboard(game_code):
-    """Get the scoreboard! Or clear it."""
+    """
+    Description
+    -----------
+    Get the scoreboard, delete it, or clear it.
+
+    Methods
+    -------
+    Use GET to get the scoreboard data.
+
+    Use PUT to reset all of the scores on the scoreboard to 0.
+
+    Use DELETE to delete every name and score from the scoreboard.
+
+    Returns
+    -------
+    Every method returns the whole scoreboard as of the operation completion.
+    If
+    type Score = {
+        'name': <string>,
+        'score': <number>
+    }
+    Then return is of type Score[]. (i.e. an array of scores)
+
+    Results will be ordered from highest to lowest by default.
+    """
     if request.method == "GET":
-        return Response(
-            json.dumps(get_all_of_the_things(game_code)),
-            mimetype="application/json",
-            status=200,
-        )
+        if request.args.get("help", None) is not None:
+            return Response(
+                dedent(api_scoreboard.__doc__), mimetype="text/plain", status=200
+            )
+        else:
+            return Response(
+                json.dumps(get_all_of_the_things(game_code)),
+                mimetype="application/json",
+                status=200,
+            )
     elif request.method == "DELETE":
         return Response(
             json.dumps(delete_all_of_the_things(game_code)),
